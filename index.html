@@ -621,14 +621,15 @@ function renderWeek(w){
       <span class="tag">${w.theme}</span>
       <span class="tag">${w.protein}</span>
     </div>
-    <button class="btn-pdf" onclick="printWeek(${w.id})">⬇ PDF mentés</button>
   </div>
 
-  <div id="printArea-${w.id}">
-  <h2 class="print-only">${w.id}. hét — ${w.theme}</h2>
   <div class="grid2">
-    <div class="card">
-      <h2 class="section-title">Bevásárlólista</h2>
+    <div class="card" id="printArea-${w.id}">
+      <h2 class="print-only">${w.id}. hét — ${w.theme} — Bevásárlólista</h2>
+      <div class="week-header-row" style="margin-bottom:10px;">
+        <h2 class="section-title" style="margin-bottom:0;">Bevásárlólista</h2>
+        <button class="btn-pdf" onclick="printWeek(${w.id})">⬇ Letöltés / PDF</button>
+      </div>
       <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:${totalItems?(checkedCount/totalItems*100):0}%"></div></div>
       ${Object.entries(w.shopping).map(([cat,items])=>`
         <div class="shop-cat">
@@ -689,7 +690,6 @@ function renderWeek(w){
         </tr>`).join('')}
     </table>
     <p style="font-size:12px; color:#a89686; margin:14px 0 0 0; font-style:italic;">Vasárnap este indul a következő heti meal prep.</p>
-  </div>
   </div>
   `;
 }
