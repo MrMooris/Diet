@@ -170,18 +170,25 @@
   .week-card .p{font-size:12.5px; color:#7a6a5c;}
 
   /* shopping list */
-  .shop-cat{margin-bottom:14px;}
-  .shop-cat h4{font-size:13px; color:var(--mid); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;}
-  .shop-item{
-    display:flex; align-items:center; gap:10px;
-    padding:8px 10px;
-    border-radius:8px;
-    font-size:14.5px;
-  }
-  .shop-item:hover{background:var(--paper);}
-  .shop-item input{width:17px; height:17px; accent-color:var(--mid); cursor:pointer;}
-  .shop-item label{cursor:pointer; flex:1;}
-  .shop-item.checked label{text-decoration:line-through; color:#b3a493;}
+  .shop-card-header{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:4px;}
+  .shop-sub{font-size:12.5px; color:#8a7565; margin:4px 0 0 0; max-width:520px;}
+  .shop-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:26px 32px; margin-top:18px;}
+  @media (max-width:820px){ .shop-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .shop-grid{grid-template-columns:1fr;} }
+  .shop-cat h4{font-size:14.5px; color:var(--dark); font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:0; text-transform:none; margin-bottom:10px; padding-bottom:7px; border-bottom:1.5px dashed var(--mid); display:flex; align-items:center; gap:7px;}
+  ul.items{list-style:none; margin:0; padding:0;}
+  ul.items li{display:flex; align-items:center; gap:8px; padding:6px 4px; border-radius:8px; font-size:13.5px;}
+  ul.items li:hover{background:var(--paper);}
+  ul.items li input[type=checkbox]{width:16px; height:16px; accent-color:var(--mid); cursor:pointer; flex:0 0 16px;}
+  ul.items li .item-text{flex:1; outline:none; padding:2px 4px; border-radius:6px; line-height:1.35;}
+  ul.items li .item-text:focus{background:white;}
+  ul.items li.checked .item-text{text-decoration:line-through; color:#b3a493;}
+  ul.items li .del{opacity:0; cursor:pointer; color:#c98a6f; font-weight:800; font-size:13px; flex:0 0 16px; text-align:center; transition:opacity .15s;}
+  ul.items li:hover .del{opacity:1;}
+  .add-row{margin-top:6px;}
+  .add-row input{width:100%; font-family:'Inter',sans-serif; font-size:12.5px; padding:6px 8px; border-radius:8px; border:1px solid #e8dfd3; outline:none; box-sizing:border-box;}
+  .add-row input:focus{border-color:var(--mid);}
+  @media print{ .add-row, ul.items li .del{display:none;} }
   .progress-wrap{
     background:#ede3d6; border-radius:20px; height:8px; overflow:hidden; margin:10px 0 18px 0;
   }
@@ -388,12 +395,12 @@ const RECIPES = {
 };
 
 const WEEKS = [
- {id:1, theme:"Csirkés hét", protein:"Csirkemell, tojás, görög joghurt", cost:"kb. 16 000–19 000 Ft",
+ {id:1, theme:"Csirkés hét", protein:"Csirkemell, tojás, görög joghurt", cost:"kb. 30–35 €",
   shopping:{
-    "Fehérje":["1,4 kg csirkemell","15 db tojás","1,8 kg görög joghurt (pl. Lidl Milbona)","Sovány sonka/pulykamell felvágott"],
-    "Szénhidrát":["1 kg barna rizs","Teljes kiőrlésű kenyér","Zabpehely (500 g)"],
-    "Zöldség / gyümölcs":["Brokkoli, sárgarépa","Paprika, paradicsom, spenót","Fagyasztott bogyós gyümölcs mix","Banán"],
-    "Egyéb":["Sajt","Dió/mandula, méz, fahéj","Olívaolaj, fűszerek"]
+    "Fehérje":["1,2 kg csirkemell","500 g görög joghurt","400 g cottage cheese","150 g bacon","150 g tejföl"],
+    "Zöldség":["1 kg burgonya","500 g sárgarépa","1 fej brokkoli","250 g gomba","2 uborka","1 jégsaláta","1 kínai kel","100 g rukkola","500 g vöröshagyma","150 g száraz lencse"],
+    "Gyümölcs":["1 kg alma","300 g eper","4 narancs","30 g kókuszreszelék"],
+    "Egyéb":["50 g parmezán","1 camembert (~125 g)","1 brie (~125 g)","Olívaolaj, citrom","Só, bors, kömény, pirospaprika-por, oregánó, kakukkfű"]
   },
   prep:{sun:"Süss meg egyszerre 900 g citromos-fűszeres csirkemellet, párolj 1 fej brokkolit teljesen puhára, párolj 500 g répát, főzz 700 g rizst. Süss 8 tojást keményre. A köretekből munkanapokon kb. 120 g-ot adagolj a korábbi 150 g helyett — ez adja a kis visszavételt.",
         wed:"200 g csirkemell wokban zöldségekkel — ez adja a csütörtöki plusz fehérjét."},
@@ -404,12 +411,12 @@ const WEEKS = [
   weekend:[
     ["Péntek","R4","R11","R16","R18"],["Szombat","R3","R6","R13","R18"],["Vasárnap","R1","R11","R15","R19"]
   ]},
- {id:2, theme:"Pulykás hét", protein:"Pulykamell, darált pulyka", cost:"kb. 14 000–17 000 Ft",
+ {id:2, theme:"Pulykás hét", protein:"Pulykamell, darált pulyka", cost:"kb. 27–32 €",
   shopping:{
-    "Fehérje":["1 kg pulykamell","500 g darált pulykahús","15 db tojás","1,5 kg görög joghurt"],
-    "Szénhidrát":["1,4 kg édesburgonya","500 g rizs","Zabpehely/zabliszt (500 g)","Teljes kiőrlésű tortilla és kenyér"],
-    "Zöldség / gyümölcs":["Paprika, brokkoli, sárgarépa","Fagyasztott bogyós gyümölcs","Banán, alma"],
-    "Egyéb":["Sajt, sovány felvágott","Szójaszósz"]
+    "Fehérje":["1 kg pulykamell","400 g cottage cheese","500 g görög joghurt","200 g tejföl","100 g bacon"],
+    "Zöldség":["1 kg burgonya","500 g sárgarépa","1 fej brokkoli","250 g gomba","500 g fejeskáposzta","1 jégsaláta","1 kínai kel","500 g vöröshagyma"],
+    "Gyümölcs":["1 kg alma","3 db őszibarack","300 g cseresznye (szezontól függően)","30 g kókuszreszelék"],
+    "Egyéb":["50 g parmezán","1 camembert (~125 g)","1 brie (~125 g)","Olívaolaj, citrom","Fűszerek (bors, pirospaprika-por, kakukkfű)"]
   },
   prep:{sun:"Süss meg 700 g pulykamellet szeletekben, süss sütőben 1,4 kg kockázott édesburgonyát, főzz 700 g rizst. A pulykamell szárazabb húsféle, érdemes egy joghurtos öntetet is készíteni mellé. Munkanapokon a köretből kb. 120 g-ot adagolj a 150 g helyett.",
         wed:"Pulykafasírt darált pulykahúsból, rizzsel — két napra is elég belőle."},
@@ -420,12 +427,12 @@ const WEEKS = [
   weekend:[
     ["Péntek","R4","R10","R14","R18"],["Szombat","R2","R7","R14","R17"],["Vasárnap","R5","R12","R13","R18"]
   ]},
- {id:3, theme:"Halas hét", protein:"Lazac, tőkehal, tonhal", cost:"kb. 17 000–21 000 Ft",
+ {id:3, theme:"Halas hét", protein:"Lazac, tőkehal, tonhal", cost:"kb. 30–37 € (a lazac árától függően)",
   shopping:{
-    "Fehérje":["800 g lazac vagy tőkehal (fagyasztott is jó)","3 konzerv tonhal","15 db tojás","1,5 kg görög joghurt"],
-    "Szénhidrát":["1 kg rizs vagy quinoa","Zabpehely (500 g)","Teljes kiőrlésű kenyér"],
-    "Zöldség / gyümölcs":["Spenót, saláta","Fagyasztott bogyós gyümölcs","Banán, citrom"],
-    "Egyéb":["Sajt, sovány felvágott","Olívaolaj"]
+    "Fehérje":["2 konzerv tonhal (saját levében)","2 konzerv szardínia","250 g fagyasztott garnélarák","2 szelet lazac (csak akció esetén, különben +1 konzerv tonhal)","10 tojás","500 g görög joghurt","400 g cottage cheese"],
+    "Zöldség":["1 kg burgonya","500 g sárgarépa","1 fej brokkoli","2 uborka","1 jégsaláta","1 kínai kel","150 g száraz lencse","500 g vöröshagyma","1 csomag újhagyma"],
+    "Gyümölcs":["1 kg alma","4 narancs","300 g szőlő"],
+    "Egyéb":["Olívaolaj, citrom","Kapor, bors, só, pirospaprika-por"]
   },
   prep:{sun:"Süsd meg a halat citrommal (frissen is süthető hetente kétszer), főzz 700 g quinoát/rizst, süss 8 tojást keményre. A konzerv tonhal mindig frissen kerül a tányérra. Munkanapokon a köretből kb. 120 g-ot adagolj a 150 g helyett.",
         wed:"Friss adag hal + rizs — ezen a héten a fehérje nagy részét frissen érdemes sütni."},
@@ -436,12 +443,12 @@ const WEEKS = [
   weekend:[
     ["Péntek","R5","R9","R13","R17"],["Szombat","R3","R8","R14","R19"],["Vasárnap","R1","R9","R15","R17"]
   ]},
- {id:4, theme:"Vegyes hét", protein:"Csirke, pulyka, hal vegyesen", cost:"kb. 15 000–19 000 Ft",
+ {id:4, theme:"Szárnyas & hüvelyes hét", protein:"Csirkeszárny, száraz lencse", cost:"kb. 25–30 €",
   shopping:{
-    "Fehérje":["700 g csirkemell","400 g pulykamell","300 g hal","2 konzerv tonhal","15 db tojás, 1,8 kg görög joghurt"],
-    "Szénhidrát":["Rizs, édesburgonya","Teljes kiőrlésű tortilla és kenyér","Zabpehely, zabliszt"],
-    "Zöldség / gyümölcs":["Fagyasztott bogyós gyümölcs","Banán, dió/mandula"],
-    "Egyéb":["Sajt, sovány felvágott"]
+    "Fehérje":["900 g csirkeszárny","150 g bacon","250 g száraz lencse","500 g görög joghurt","400 g cottage cheese","150 g tejföl"],
+    "Zöldség":["1 kg burgonya","500 g sárgarépa","1 fej brokkoli","250 g gomba","500 g fejeskáposzta","1 jégsaláta","1 kínai kel","500 g vöröshagyma"],
+    "Gyümölcs":["1 mangó","kis szelet görögdinnye (~500 g)","4 narancs","30 g kókuszreszelék"],
+    "Egyéb":["50 g parmezán","1 camembert (~125 g)","1 brie (~125 g)","Olívaolaj, citrom, lime","Só, bors, pirospaprika-por, kakukkfű"]
   },
   prep:{sun:"Kisebb adagokban, vegyesen sütsz minden fehérjeforrásból (csirke, pulyka, hal). Főzz 700 g rizst/édesburgonyát köretnek, süss 8 tojást keményre. Munkanapokon a köretből kb. 120 g-ot adagolj a 150 g helyett.",
         wed:"Friss hal vagy csirke wokban — plusz fehérje a hét második felére."},
@@ -517,11 +524,12 @@ const STORE = {
    amíg a bolt fülnél nyitva a lap — ugyanúgy, ahogy Anett oldala is teszi. */
 function startShoppingPolling(){
   setInterval(async ()=>{
+    if(isEditingShopping) return;
     try{
       const remote = await fetchRemote('shopping');
-      if(remote && JSON.stringify(remote) !== JSON.stringify(checkState)){
-        checkState = remote;
-        try{ localStorage.setItem(STORAGE_PREFIX+'shopping', JSON.stringify(checkState)); }catch(e){}
+      if(remote && JSON.stringify(remote) !== JSON.stringify(shoppingState)){
+        shoppingState = remote;
+        try{ localStorage.setItem(STORAGE_PREFIX+'shopping', JSON.stringify(shoppingState)); }catch(e){}
         if(activeTab!=='overview' && activeTab!=='napló') render();
       }
       setSyncBadge("☁️ Szinkronban ✓", "ok");
@@ -534,7 +542,8 @@ function startShoppingPolling(){
 const CYCLE_START_DATE = new Date(2026, 6, 13); // 2026. július 13., hétfő
 
 /* ================= STATE ================= */
-let checkState = {};
+let shoppingState = {};          // {weekId: {cat: [{text, checked}, ...]}}
+let isEditingShopping = false;
 let weightLog = [];              // [{date:"2026-07-16", weight:114.2}, ...]
 let goal = {start:116, target:80};
 let waterLog = {};                // {"2026-07-16": 5}  -> pohár darabszám
@@ -609,53 +618,75 @@ function renderOverview(){
   `;
 }
 
+const CAT_ICONS = {"Fehérje":"🥚","Zöldség":"🥦","Gyümölcs":"🍓","Egyéb":"🧂"};
+const CAT_ORDER = ["Fehérje","Zöldség","Gyümölcs","Egyéb"];
+
+function ensureShoppingWeek(weekId){
+  if(!shoppingState[weekId]){
+    const w = WEEKS.find(x=>x.id===weekId);
+    const cats = {};
+    Object.keys(w.shopping).forEach(cat=>{
+      cats[cat] = w.shopping[cat].map(text=>({text, checked:false}));
+    });
+    shoppingState[weekId] = cats;
+  }
+  return shoppingState[weekId];
+}
+
 function renderWeek(w){
-  const totalItems = Object.values(w.shopping).flat().length;
-  const key = `w${w.id}`;
-  if(!checkState[key]) checkState[key] = {};
-  const checkedCount = Object.values(checkState[key]).filter(Boolean).length;
+  const wState = ensureShoppingWeek(w.id);
+  const allItems = Object.values(wState).flat();
+  const totalItems = allItems.length;
+  const checkedCount = allItems.filter(it=>it.checked).length;
+  const orderedCats = CAT_ORDER.filter(c=>wState[c]).concat(Object.keys(wState).filter(c=>!CAT_ORDER.includes(c)));
 
   return `
   <div class="week-header-row">
     <div class="tag-row">
       <span class="tag">${w.theme}</span>
       <span class="tag">${w.protein}</span>
+      <span class="tag">Becsült heti költség: ${w.cost}</span>
     </div>
   </div>
 
-  <div class="grid2">
-    <div class="card" id="printArea-${w.id}">
-      <h2 class="print-only">${w.id}. hét — ${w.theme} — Bevásárlólista</h2>
-      <div class="week-header-row" style="margin-bottom:10px;">
-        <h2 class="section-title" style="margin-bottom:0;">Bevásárlólista</h2>
-        <button class="btn-pdf" onclick="printWeek(${w.id})">⬇ Letöltés / PDF</button>
+  <div class="card" id="printArea-${w.id}">
+    <h2 class="print-only">${w.id}. hét — ${w.theme} — Bevásárlólista</h2>
+    <div class="shop-card-header">
+      <div>
+        <h2 class="section-title">🛒 ${w.id}. hét bevásárlólista</h2>
+        <p class="shop-sub">Pipáld ki, amit már megvettél, kattints a szövegre a szerkesztéshez, vagy adj hozzá saját tételt.</p>
       </div>
-      <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:${totalItems?(checkedCount/totalItems*100):0}%"></div></div>
-      ${Object.entries(w.shopping).map(([cat,items])=>`
+      <div class="tag-row">
+        <button class="btn-pdf" onclick="printWeek(${w.id})">⬇ PDF mentés</button>
+        <button class="btn-pdf" style="background:var(--mid);" data-reset-week="${w.id}">↺ Alaphelyzet</button>
+      </div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:${totalItems?(checkedCount/totalItems*100):0}%"></div></div>
+    <div class="shop-grid">
+      ${orderedCats.map(cat=>`
         <div class="shop-cat">
-          <h4>${cat}</h4>
-          ${items.map((item,i)=>{
-            const id = `${key}-${cat}-${i}`.replace(/\s/g,'_');
-            const isChecked = !!checkState[key][id];
-            return `<div class="shop-item ${isChecked?'checked':''}" data-id="${id}" data-week="${key}">
-              <input type="checkbox" id="${id}" ${isChecked?'checked':''}>
-              <label for="${id}">${item}</label>
-            </div>`;
-          }).join('')}
+          <h4>${CAT_ICONS[cat]||'•'} ${cat}</h4>
+          <ul class="items" data-cat="${cat}">
+            ${wState[cat].map((it,idx)=>`
+              <li class="${it.checked?'checked':''}" data-idx="${idx}">
+                <input type="checkbox" ${it.checked?'checked':''}>
+                <span class="item-text" contenteditable="true">${it.text}</span>
+                <span class="del" title="Törlés">✕</span>
+              </li>`).join('')}
+          </ul>
+          <div class="add-row"><input type="text" placeholder="+ új tétel..." data-cat="${cat}"></div>
         </div>`).join('')}
     </div>
+  </div>
 
-    <div>
-      <div class="card">
-        <h2 class="section-title">Meal prep</h2>
-        <div class="prepbox">
-          <h4>Vasárnap este</h4>
-          <p>${w.prep.sun}</p>
-          <h4>Szerda este</h4>
-          <p>${w.prep.wed}</p>
-          <div class="cost">Becsült heti költség: ${w.cost}</div>
-        </div>
-      </div>
+  <div class="card">
+    <h2 class="section-title">Meal prep</h2>
+    <div class="prepbox">
+      <h4>Vasárnap este</h4>
+      <p>${w.prep.sun}</p>
+      <h4>Szerda este</h4>
+      <p>${w.prep.wed}</p>
+      <div class="cost">Becsült heti költség: ${w.cost}</div>
     </div>
   </div>
 
@@ -692,6 +723,70 @@ function renderWeek(w){
     <p style="font-size:12px; color:#a89686; margin:14px 0 0 0; font-style:italic;">Vasárnap este indul a következő heti meal prep.</p>
   </div>
   `;
+}
+
+function updateShoppingProgress(weekId){
+  const items = Object.values(shoppingState[weekId]).flat();
+  const total = items.length;
+  const checked = items.filter(it=>it.checked).length;
+  const bar = document.getElementById('progressBar');
+  if(bar) bar.style.width = (total? checked/total*100:0)+'%';
+}
+
+function bindShoppingEvents(weekId){
+  const wState = shoppingState[weekId];
+  mainEl.querySelectorAll('.items').forEach(ul=>{
+    const cat = ul.dataset.cat;
+    ul.querySelectorAll('li').forEach(li=>{
+      const idx = parseInt(li.dataset.idx);
+      const cb = li.querySelector('input[type=checkbox]');
+      const span = li.querySelector('.item-text');
+      const del = li.querySelector('.del');
+      cb.onchange = ()=>{
+        wState[cat][idx].checked = cb.checked;
+        li.classList.toggle('checked', cb.checked);
+        updateShoppingProgress(weekId);
+        STORE.set('shopping', shoppingState);
+      };
+      span.addEventListener('focus', ()=>{ isEditingShopping = true; });
+      span.addEventListener('blur', ()=>{
+        isEditingShopping = false;
+        const val = span.textContent.trim();
+        wState[cat][idx].text = val || wState[cat][idx].text;
+        span.textContent = wState[cat][idx].text;
+        STORE.set('shopping', shoppingState);
+      });
+      span.addEventListener('keydown', (e)=>{
+        if(e.key==='Enter'){ e.preventDefault(); span.blur(); }
+      });
+      del.onclick = ()=>{
+        wState[cat].splice(idx,1);
+        STORE.set('shopping', shoppingState);
+        render();
+      };
+    });
+  });
+  mainEl.querySelectorAll('.add-row input').forEach(inp=>{
+    const cat = inp.dataset.cat;
+    inp.addEventListener('focus', ()=>{ isEditingShopping = true; });
+    inp.addEventListener('blur', ()=>{ isEditingShopping = false; });
+    inp.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' && inp.value.trim()){
+        wState[cat].push({text:inp.value.trim(), checked:false});
+        STORE.set('shopping', shoppingState);
+        render();
+      }
+    });
+  });
+  const resetBtn = mainEl.querySelector(`[data-reset-week="${weekId}"]`);
+  if(resetBtn) resetBtn.onclick = ()=>{
+    if(confirm("Biztosan visszaállítod ennek a hétnek a bevásárlólistáját az eredeti állapotra? A saját tételeid és pipáid elvesznek.")){
+      delete shoppingState[weekId];
+      ensureShoppingWeek(weekId);
+      STORE.set('shopping', shoppingState);
+      render();
+    }
+  };
 }
 
 function renderRecipesSection(){
@@ -731,19 +826,7 @@ function render(){
   else {
     const w = WEEKS.find(x=>String(x.id)===String(activeTab));
     mainEl.innerHTML = renderWeek(w);
-    mainEl.querySelectorAll('.shop-item input').forEach(cb=>{
-      cb.onchange = ()=>{
-        const item = cb.closest('.shop-item');
-        const week = item.dataset.week, id = item.dataset.id;
-        checkState[week][id] = cb.checked;
-        item.classList.toggle('checked', cb.checked);
-        const total = Object.values(w.shopping).flat().length;
-        const checked = Object.values(checkState[week]).filter(Boolean).length;
-        const bar = document.getElementById('progressBar');
-        if(bar) bar.style.width = (total? checked/total*100:0)+'%';
-        STORE.set('shopping', checkState);
-      };
-    });
+    bindShoppingEvents(w.id);
   }
 }
 
@@ -954,7 +1037,7 @@ function printWeek(weekId){
 
 async function initApp(){
   setSyncBadge("☁️ Csatlakozás...", "");
-  checkState = await STORE.get('shopping', {});
+  shoppingState = await STORE.get('shopping', {});
   weightLog = await STORE.get('weight', []);
   goal = await STORE.get('goal', {start:116, target:80});
   const water = await STORE.get('water', {log:{}, target:2.5});
